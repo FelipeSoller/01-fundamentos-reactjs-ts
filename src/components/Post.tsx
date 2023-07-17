@@ -19,21 +19,26 @@ interface Content {
   content: string
 }
 
-interface PostProps {
+export interface PostType {
+  id: number;
   author: Author;
   publishedAt: Date;
   content: Content[];
 }
 
-export function Post({ author, content, publishedAt }: PostProps) {
+interface PostProps {
+  post: PostType
+}
+
+export function Post({ post }: PostProps) {
   const [newCommentText, setNewCommentText] = useState('')
   const [comments, setComments] = useState([
     'Post muito bacana, ein?'
   ])
 
-  const publishedAtDateFormatted = format(publishedAt, "d 'de' LLLL 'às' HH':'mm", { locale: ptBR })
+  const publishedAtDateFormatted = format(post.publishedAt, "d 'de' LLLL 'às' HH':'mm", { locale: ptBR })
 
-  const publishedAtDateRelativeToNow = formatDistanceToNow(publishedAt, {
+  const publishedAtDateRelativeToNow = formatDistanceToNow(post.publishedAt, {
     locale: ptBR,
     addSuffix: true,
   })
@@ -67,10 +72,10 @@ export function Post({ author, content, publishedAt }: PostProps) {
     <article className={styles.post}>
       <header>
         <div className={styles.author}>
-          <Avatar src={author.avatarUrl} />
+          <Avatar src={post.author.avatarUrl} />
           <div className={styles.authorInfo}>
-            <strong>{author.name}</strong>
-            <span>{author.role}</span>
+            <strong>{post.author.name}</strong>
+            <span>{post.author.role}</span>
           </div>
         </div>
         <time dateTime={publishedAtDateFormatted} title={publishedAtDateFormatted}>
@@ -78,7 +83,7 @@ export function Post({ author, content, publishedAt }: PostProps) {
         </time>
       </header>
       <div className={styles.content}>
-        {content.map(item => {
+        {post.content.map(item => {
           if (item.type === 'paragraph') {
             return <p key={item.content} >{item.content}</p>
           } else if (item.type === 'link')
